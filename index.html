@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quentinha App</title>
+    <link rel="stylesheet" href="App.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="cika.png" alt="Logo" class="logo">
+        </div>
+        <h1>Quentinha App</h1>
+        <form class="quentinha-form" id="quentinha-form">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="rua">Rua:</label>
+                <input type="text" id="rua" name="rua" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bairro">Bairro:</label>
+                <input type="text" id="bairro" name="bairro" required>
+            </div>
+
+            <div class="form-group">
+                <label for="proteina">Proteína:</label>
+                <select id="proteina" name="proteina" required>
+                    <option value="carne">Carne</option>
+                    <option value="frango">Frango</option>
+                    <option value="peixe">Peixe</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="salada">Salada:</label>
+                <select id="salada" name="salada" required>
+                    <option value="alface">Alface</option>
+                    <option value="tomate">Tomate</option>
+                    <option value="pepino">Pepino</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="acompanhamentos">Acompanhamentos:</label>
+                <div id="acompanhamentos" class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="arroz"> Arroz
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="feijão"> Feijão
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="farofa"> Farofa
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="macarrao"> Macarrão
+                    </label>
+                </div>
+            </div>
+
+            <div class="total">Total: R$ <span id="total-amount">0,00</span></div>
+
+            <button type="submit" class="submit-button">Enviar Pedido</button>
+        </form>
+
+        <div class="cart">
+            <h2>Resumo do Pedido</h2>
+            <ul id="pedido-list">
+                <!-- Pedidos adicionados aparecerão aqui -->
+            </ul>
+            <button class="cart-button" id="whatsapp-button">Enviar para WhatsApp</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('quentinha-form');
+            const pedidoList = document.getElementById('pedido-list');
+            const whatsappButton = document.getElementById('whatsapp-button');
+            const totalAmount = document.getElementById('total-amount');
+
+            let pedidos = [];
+            let total = 0;
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const nome = document.getElementById('nome').value;
+                const rua = document.getElementById('rua').value;
+                const bairro = document.getElementById('bairro').value;
+                const proteina = document.getElementById('proteina').value;
+                const salada = document.getElementById('salada').value;
+                const acompanhamentos = Array.from(document.querySelectorAll('#acompanhamentos input:checked'))
+                    .map(acomp => acomp.value);
+
+                const pedido = {
+                    nome,
+                    rua,
+                    bairro,
+                    proteina,
+                    salada,
+                    acompanhamentos
+                };
+
+                pedidos.push(pedido);
+                total += calcularTotal(acompanhamentos.length);
+
+                atualizarListaPedidos();
+                atualizarTotal();
+            });
+
+            whatsappButton.addEventListener('click', function() {
+                const mensagem = gerarMensagemWhatsApp(pedidos);
+                window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`);
+            });
+
+            function calcularTotal(numeroDeAcompanhamentos) {
+                return 10 + numeroDeAcompanhamentos * 2;
+            }
+
+            function atualizarListaPedidos() {
+                pedidoList.innerHTML = '';
+                pedidos.forEach((pedido, index) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <p><strong>Nome:</strong> ${pedido.nome}</p>
+                        <p><strong>Rua:</strong> ${pedido.rua}</p>
+                        <p><strong>Bairro:</strong> ${pedido.bairro}</p>
+                        <p><strong>Proteína:</strong> ${pedido.proteina}</p>
+                        <p><strong>Salada:</strong> ${pedido.salada}</p>
+                        <p><strong>Acompanhamentos:</strong> ${pedido.acompanhamentos.join(', ')}</p>
+                        <button onclick="removerPedido(${index})">Excluir</button>
+                    `;
+                    pedidoList.appendChild(li);
+                });
+            }
+
+            function atualizarTotal() {
+                totalAmount.textContent = total.toFixed(2);
+            }
+
+            window.removerPedido = function(index) {
+                total -= calcularTotal(pedidos[index].acompanhamentos.length);
+                pedidos.splice(index, 1);
+                atualizarListaPedidos();
+                atualizarTotal();
+            };
+
+            function gerarMensagemWhatsApp(pedidos) {
+                let mensagem = 'Resumo do pedido:\n\n';
+                pedidos.forEach((pedido, index) => {
+                    mensagem += `Pedido ${index + 1}:\n`;
+                    mensagem += `- Nome: ${pedido.nome}\n`;
+                    mensagem += `- Rua: ${pedido.rua}\n`;
+                    mensagem += `- Bairro: ${pedido.bairro}\n`;
+                    mensagem += `- Proteína: ${pedido.proteina}\n`;
+                    mensagem += `- Salada: ${pedido.salada}\n`;
+                    mensagem += `- Acompanhamentos: ${pedido.acompanhamentos.join(', ')}\n\n`;
+                });
+                mensagem += `Total: R$ ${total.toFixed(2)}`;
+                return mensagem;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+:root {
+    --primary-red: #D32F2F; /* Vermelho do logotipo */
+    --primary-white: #FFFFFF; /* Branco do logotipo */
+    --light-gray: #f2f2f2; /* Fundo claro */
+    --medium-gray: #e0e0e0; /* Fundo de elementos */
+    --dark-gray: #757575; /* Texto e bordas */
+    --dark-brown: #4E342E; /* Texto marrom */
+    --hover-red: #C12727; /* Vermelho mais escuro para hover */
+    --dark-green: #2e8b57;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-gray);
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--primary-white);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    color: var(--primary-red);
+  }
+  
+  .quentinha-form {
+    background-color: var(--primary-white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    color: black;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--dark-brown);
+  }
+  
+  select, input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: var(--primary-white);
+    color: black;
+  }
+  
+  .total {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+    text-align: right;
+    color: var(--dark-brown);
+  }
+  
+  .submit-button {
+    background-color: var(--dark-green);
+    color: var(--primary-white);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: var(--dark-green);
+  }
+  
+  .submit-button:disabled {
+    background-color: var(--medium-gray);
+    cursor: not-allowed;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--medium-gray);
+    padding: 5px 10px;
+    border-radius: 4px;
+  }
+  
+  .checkbox-label input {
+    margin-right: 5px;
+  }
+  
+  input[type="checkbox"] {
+    cursor: pointer;
+  }
+  
+  input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+  }
+  
+  /* Estilos para o autocomplete */
+  .autocomplete {
+    position: relative;
+  }
+  
+  .autocomplete-items {
+    position: absolute;
+    border: 1px solid var(--medium-gray);
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--primary-white);
+  }
+  
+  .autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .autocomplete-items div:hover {
+    background-color: var(--light-gray);
+    color:black;
+  }
+  
+  /* Estilo para as imagens */
+  .food-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  .logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .logo {
+    width: 100px; /* Ajuste o tamanho conforme necessário */
+    height: auto;
+    border-radius: 50%; /* Para que a imagem tenha um formato circular */
+  }
+  
+  .cart-button {
+    background-color: var(--dark-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .cart-button:hover {
+    background-color: #3cb371;
+  }
+  
+  .cart {
+    background-color: var(--off-white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .cart h2 {
+    color: var(--dark-green);
+    margin-bottom: 15px;
+  }
+  
+  .cart ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .cart ul li {
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .cart ul li p {
+    margin: 5px 0;
+    color:black;
+  }
+  
+  .cart ul li button {
+    background-color: var(--dark-green);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .cart ul li button:hover {
+    background-color: #3cb371;
+  }
