@@ -58,6 +58,12 @@
                     <label class="checkbox-label">
                         <input type="checkbox" value="farofa"> Farofa
                     </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="macarrão"> Macarrão
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="batata-frita"> Batata Frita
+                    </label>
                 </div>
             </div>
 
@@ -81,6 +87,7 @@
             const pedidoList = document.getElementById('pedido-list');
             const whatsappButton = document.getElementById('whatsapp-button');
             const totalAmount = document.getElementById('total-amount');
+            const acompanhamentoCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]');
 
             let pedidos = [];
             const valorPorPedido = 10; // Valor fixo por pedido
@@ -112,7 +119,7 @@
 
             whatsappButton.addEventListener('click', function() {
                 const mensagem = gerarMensagemWhatsApp(pedidos);
-                window.open(`https://wa.me/73999099040?text=${encodeURIComponent(mensagem)}`);
+                window.open(`https://wa.me/5573999099040?text=${encodeURIComponent(mensagem)}`);
             });
 
             function atualizarListaPedidos() {
@@ -158,7 +165,23 @@
                 mensagem += `Total: R$ ${total.toFixed(2)}`;
                 return mensagem;
             }
+
+            acompanhamentoCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const checkedCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]:checked');
+                    if (checkedCheckboxes.length >= 3) {
+                        acompanhamentoCheckboxes.forEach(box => {
+                            if (!box.checked) {
+                                box.disabled = true;
+                            }
+                        });
+                    } else {
+                        acompanhamentoCheckboxes.forEach(box => box.disabled = false);
+                    }
+                });
+            });
         });
     </script>
 </body>
 </html>
+
