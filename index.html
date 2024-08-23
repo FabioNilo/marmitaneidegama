@@ -58,15 +58,12 @@
                     <label class="checkbox-label">
                         <input type="checkbox" value="farofa"> Farofa
                     </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="macarrao"> Macarrão
-                    </label>
                 </div>
             </div>
 
             <div class="total">Total: R$ <span id="total-amount">0,00</span></div>
 
-            <button type="submit" class="submit-button">Enviar Pedido</button>
+            <button type="submit" class="submit-button">Adicionar Pedido</button>
         </form>
 
         <div class="cart">
@@ -86,7 +83,7 @@
             const totalAmount = document.getElementById('total-amount');
 
             let pedidos = [];
-            let total = 0;
+            const valorPorPedido = 10; // Valor fixo por pedido
 
             form.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -109,20 +106,14 @@
                 };
 
                 pedidos.push(pedido);
-                total += calcularTotal(acompanhamentos.length);
-
                 atualizarListaPedidos();
                 atualizarTotal();
             });
 
             whatsappButton.addEventListener('click', function() {
                 const mensagem = gerarMensagemWhatsApp(pedidos);
-                window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`);
+                window.open(`https://wa.me/73999099040?text=${encodeURIComponent(mensagem)}`);
             });
-
-            function calcularTotal(numeroDeAcompanhamentos) {
-                return 10 + numeroDeAcompanhamentos * 2;
-            }
 
             function atualizarListaPedidos() {
                 pedidoList.innerHTML = '';
@@ -142,11 +133,11 @@
             }
 
             function atualizarTotal() {
+                const total = pedidos.length * valorPorPedido;
                 totalAmount.textContent = total.toFixed(2);
             }
 
             window.removerPedido = function(index) {
-                total -= calcularTotal(pedidos[index].acompanhamentos.length);
                 pedidos.splice(index, 1);
                 atualizarListaPedidos();
                 atualizarTotal();
@@ -163,6 +154,7 @@
                     mensagem += `- Salada: ${pedido.salada}\n`;
                     mensagem += `- Acompanhamentos: ${pedido.acompanhamentos.join(', ')}\n\n`;
                 });
+                const total = pedidos.length * valorPorPedido;
                 mensagem += `Total: R$ ${total.toFixed(2)}`;
                 return mensagem;
             }
