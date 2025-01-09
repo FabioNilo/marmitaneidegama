@@ -67,9 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function gerarMensagemWhatsApp(pedidos) {
-        let mensagem = 'Resumo do pedido:\n\n';
+        let mensagem = 'Olá,segue o resumo do pedido(s):\n\n';
         pedidos.forEach((pedido, index) => {
-            mensagem += `Pedido ${index + 1}:\n`;
+            mensagem += `🍽️Pedido ${index + 1}:\n`;
             mensagem += `- Nome: ${pedido.nome}\n`;
             mensagem += `- Rua: ${pedido.rua}\n`;
             mensagem += `- Bairro: ${pedido.bairro}\n`;
