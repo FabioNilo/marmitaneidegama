@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const acompanhamentoCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]');
 
     let pedidos = [];
-    const valorPorPedido = 10; // Valor fixo por pedido
+    const valorPorPedido = 20; 
 
     form.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -85,7 +85,10 @@ document.addEventListener('DOMContentLoaded', function() {
     acompanhamentoCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const checkedCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]:checked');
-            if (checkedCheckboxes.length >= 3) {
+            if (checkedCheckboxes.length > 4) {
+                window.alert('Você só pode selecionar até 4 opções.');
+                this.checked = false;
+            } else if (checkedCheckboxes.length === 4) {
                 acompanhamentoCheckboxes.forEach(box => {
                     if (!box.checked) {
                         box.disabled = true;
