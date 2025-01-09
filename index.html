@@ -31,18 +31,24 @@
             <div class="form-group">
                 <label for="proteina">Proteína:</label>
                 <select id="proteina" name="proteina" required>
-                    <option value="carne">Carne</option>
-                    <option value="frango">Frango</option>
+                    <option value="carne">Cozido de panela</option>
+                    <option value="carne2">Bife ao Molho</option>
+                    <option value="carne3">Bife Acebolado</option>
+                    <option value="frango">À parmegiana de frango</option>
+                    <option value="frango2">A Milanesa de frango</option>
                     <option value="peixe">Peixe</option>
+
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="salada">Salada:</label>
                 <select id="salada" name="salada" required>
-                    <option value="alface">Alface</option>
+                    <option value="alface">Verde</option>
                     <option value="tomate">Tomate</option>
                     <option value="pepino">Pepino</option>
+                    <option value="beterraba">Beterraba</option>
+                    <option value="legumes">Legumes</option>
                 </select>
             </div>
 
@@ -53,16 +59,25 @@
                         <input type="checkbox" value="arroz"> Arroz
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" value="feijão"> Feijão
+                        <input type="checkbox" value="arroz2"> Arroz Colorido
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" value="farofa"> Farofa
+                        <input type="checkbox" value="feijão"> Feijão de Caldo
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" value="macarrão"> Macarrão
+                        <input type="checkbox" value="feijão2"> Feijão tropeiro
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" value="batata-frita"> Batata Frita
+                        <input type="checkbox" value="farofa"> Farofa de Banana
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="farofa2"> Farofa de Manteiga
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="macarrão"> Macarrão ao molho
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" value="batata-frita"> Purê de Batata
                     </label>
                 </div>
             </div>
@@ -75,113 +90,31 @@
         <div class="cart">
             <h2>Resumo do Pedido</h2>
             <ul id="pedido-list">
-                <!-- Pedidos adicionados aparecerão aqui -->
+            
             </ul>
             <button class="cart-button" id="whatsapp-button">Enviar para WhatsApp</button>
         </div>
     </div>
+    <footer>
+        <div class="footer-content">
+            <p>Desenvolvido por Fábio Soares</p>
+            <p>Entre em contato:</p>
+            <ul class="contact-list">
+                <li>
+                    <a href="https://api.whatsapp.com/send?phone=5573999099040" target="_blank">
+                        WhatsApp
+                    </a>
+                </li>
+                <li>
+                    <a href="https://instagram.com/fabioniloss" target="_blank">
+                        Instagram
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('quentinha-form');
-            const pedidoList = document.getElementById('pedido-list');
-            const whatsappButton = document.getElementById('whatsapp-button');
-            const totalAmount = document.getElementById('total-amount');
-            const acompanhamentoCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]');
-
-            let pedidos = [];
-            const valorPorPedido = 10; // Valor fixo por pedido
-
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                const nome = document.getElementById('nome').value;
-                const rua = document.getElementById('rua').value;
-                const bairro = document.getElementById('bairro').value;
-                const proteina = document.getElementById('proteina').value;
-                const salada = document.getElementById('salada').value;
-                const acompanhamentos = Array.from(document.querySelectorAll('#acompanhamentos input:checked'))
-                    .map(acomp => acomp.value);
-
-                const pedido = {
-                    nome,
-                    rua,
-                    bairro,
-                    proteina,
-                    salada,
-                    acompanhamentos
-                };
-
-                pedidos.push(pedido);
-                atualizarListaPedidos();
-                atualizarTotal();
-            });
-
-            whatsappButton.addEventListener('click', function() {
-                const mensagem = gerarMensagemWhatsApp(pedidos);
-                window.open(`https://wa.me/5573999099040?text=${encodeURIComponent(mensagem)}`);
-            });
-
-            function atualizarListaPedidos() {
-                pedidoList.innerHTML = '';
-                pedidos.forEach((pedido, index) => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <p><strong>Nome:</strong> ${pedido.nome}</p>
-                        <p><strong>Rua:</strong> ${pedido.rua}</p>
-                        <p><strong>Bairro:</strong> ${pedido.bairro}</p>
-                        <p><strong>Proteína:</strong> ${pedido.proteina}</p>
-                        <p><strong>Salada:</strong> ${pedido.salada}</p>
-                        <p><strong>Acompanhamentos:</strong> ${pedido.acompanhamentos.join(', ')}</p>
-                        <button onclick="removerPedido(${index})">Excluir</button>
-                    `;
-                    pedidoList.appendChild(li);
-                });
-            }
-
-            function atualizarTotal() {
-                const total = pedidos.length * valorPorPedido;
-                totalAmount.textContent = total.toFixed(2);
-            }
-
-            window.removerPedido = function(index) {
-                pedidos.splice(index, 1);
-                atualizarListaPedidos();
-                atualizarTotal();
-            };
-
-            function gerarMensagemWhatsApp(pedidos) {
-                let mensagem = 'Resumo do pedido:\n\n';
-                pedidos.forEach((pedido, index) => {
-                    mensagem += `Pedido ${index + 1}:\n`;
-                    mensagem += `- Nome: ${pedido.nome}\n`;
-                    mensagem += `- Rua: ${pedido.rua}\n`;
-                    mensagem += `- Bairro: ${pedido.bairro}\n`;
-                    mensagem += `- Proteína: ${pedido.proteina}\n`;
-                    mensagem += `- Salada: ${pedido.salada}\n`;
-                    mensagem += `- Acompanhamentos: ${pedido.acompanhamentos.join(', ')}\n\n`;
-                });
-                const total = pedidos.length * valorPorPedido;
-                mensagem += `Total: R$ ${total.toFixed(2)}`;
-                return mensagem;
-            }
-
-            acompanhamentoCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const checkedCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]:checked');
-                    if (checkedCheckboxes.length >= 3) {
-                        acompanhamentoCheckboxes.forEach(box => {
-                            if (!box.checked) {
-                                box.disabled = true;
-                            }
-                        });
-                    } else {
-                        acompanhamentoCheckboxes.forEach(box => box.disabled = false);
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="codigo.js"></script>
 </body>
 </html>
 

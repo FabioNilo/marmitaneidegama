@@ -222,3 +222,36 @@
   .cart ul li button:hover {
     background-color: #3cb371;
   }
+
+  /* Footer Styles */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.footer-content p {
+  margin: 5px 0;
+}
+
+.contact-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.contact-list li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.contact-list a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+}
