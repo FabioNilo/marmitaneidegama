@@ -1,11 +1,11 @@
 :root {
-    --primary-red: #D32F2F; /* Vermelho do logotipo */
-    --primary-white: #FFFFFF; /* Branco do logotipo */
-    --light-gray: #f2f2f2; /* Fundo claro */
-    --medium-gray: #e0e0e0; /* Fundo de elementos */
-    --dark-gray: #757575; /* Texto e bordas */
-    --dark-brown: #4E342E; /* Texto marrom */
-    --hover-red: #C12727; /* Vermelho mais escuro para hover */
+    --primary-red: #D32F2F; 
+    --primary-white: #FFFFFF; 
+    --light-gray: #f2f2f2; 
+    --medium-gray: #e0e0e0; 
+    --dark-gray: #757575; 
+    --dark-brown: #4E342E; 
+    --hover-red: #C12727; 
     --dark-green: #2e8b57;
   }
   
@@ -86,6 +86,10 @@
     .card h2 {
       margin-top: 0;
       font-size: 20px;
+      text-decoration: underline;
+      padding: 10px;
+      width: 95px;
+      
     }
 
     .card p {
