@@ -10,9 +10,9 @@
 <body>
     <div class="container">
         <div class="logo-container">
-            <img src="cika.png" alt="Logo" class="logo">
+            <img src="neide.jpg" alt="Logo" class="logo">
         </div>
-        <h1>Quentinha App</h1>
+        <h1>Opções da Semana</h1>
         <form class="quentinha-form" id="quentinha-form">
             <div class="form-group">
                 <label for="nome">Nome:</label>
@@ -29,70 +29,153 @@
                 <input type="text" id="bairro" name="bairro" required>
             </div>
 
-            <div class="form-group">
-                <label for="proteina">Proteína:</label>
-                <select id="proteina" name="proteina" required>
-                    <option value="Cozido de panela">Cozido de panela</option>
-                    <option value="Bife ao Molho">Bife ao Molho</option>
-                    <option value="Bife Acebolado">Bife Acebolado</option>
-                    <option value="À parmegiana de frango">À parmegiana de frango</option>
-                    <option value="A Milanesa de frango">A Milanesa de frango</option>
-                    <option value="peixe">Peixe</option>
+            <div class="card-container">
+                <div class="card" data-opcao="Opção 01: Carne de panela, repolho refogado, seleta de legumes e purê de batata doce" data-price="15.00">
+                    <h2>Opção 01</h2>
+                    <p>Carne de panela</p>
+                    <p>Repolho refogado</p>
+                    <p>Seleta de legumes</p>
+                    <p>Purê de batata doce</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
 
-                </select>
-            </div>
+                <div class="card" data-opcao="Opção 02: Ensopado bovino, arroz branco, salada de batata doce com abóbora e feijão" data-price="16.50">
+                    <h2>Opção 02</h2>
+                    <p>Ensopado bovino</p>
+                    <p>Arroz branco</p>
+                    <p>Salada de batata doce com abóbora</p>
+                    <p>Feijão</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
 
-            <div class="form-group">
-                <label for="salada">Salada:</label>
-                <select id="salada" name="salada" required>
-                    <option value="Verde">Verde</option>
-                    <option value="tomate">Tomate</option>
-                    <option value="pepino">Pepino</option>
-                    <option value="beterraba">Beterraba</option>
-                    <option value="legumes">Legumes</option>
-                </select>
-            </div>
+                <div class="card" data-opcao="Opção 03: Bife ao molho, purê de inhame, cabotiá assada e brócolis" data-price="18.00">
+                    <h2>Opção 03</h2>
+                    <p>Bife ao molho</p>
+                    <p>Purê de inhame</p>
+                    <p>Cabotiá assada</p>
+                    <p>Brócolis</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
 
-            <div class="form-group"> 
-                <label for="acompanhamentos">Acompanhamentos:</label>
-                <div id="acompanhamentos" class="checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="arroz"> Arroz Branco
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Arroz Colorido"> Arroz Colorido
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Feijão de Caldo"> Feijão de Caldo
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Feijão tropeiro"> Feijão tropeiro
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Farofa de Banana"> Farofa de Banana
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Farofa de Manteiga"> Farofa de Manteiga
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Macarrão ao molho"> Macarrão ao molho
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="checkbox" value="Purê de Batata"> Purê de Batata
-                    </label>
+                <div class="card" data-opcao="Opção 04: Bife empanado, purê de abóbora, repolho refogado e batata rústica" data-price="17.50">
+                    <h2>Opção 04</h2>
+                    <p>Bife empanado</p>
+                    <p>Purê de abóbora</p>
+                    <p>Repolho refogado</p>
+                    <p>Batata rústica</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 05: Bife ao molho, arroz integral, feijão e salada de batata doce com abóbora" data-price="16.00">
+                    <h2>Opção 05</h2>
+                    <p>Bife ao molho</p>
+                    <p>Arroz integral</p>
+                    <p>Feijão</p>
+                    <p>Salada de batata doce com abóbora</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 06: Ensopado bovino, arroz integral, feijão, salada de batata doce e abóbora e seleta de legumes" data-price="17.00">
+                    <h2>Opção 06</h2>
+                    <p>Ensopado bovino</p>
+                    <p>Arroz integral</p>
+                    <p>Feijão</p>
+                    <p>Salada de batata doce e abóbora</p>
+                    <p>Seleta de legumes</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 07: Lombo recheado, macarrão ao molho pesto, seleta de legumes e antepasto de berinjela" data-price="20.00">
+                    <h2>Opção 07</h2>
+                    <p>Lombo recheado</p>
+                    <p>Macarrão ao molho pesto</p>
+                    <p>Seleta de legumes</p>
+                    <p>Antepasto de berinjela</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 08: Lombo recheado, arroz integral, seleta de legumes e antepasto de berinjela" data-price="20.00">
+                    <h2>Opção 08</h2>
+                    <p>Lombo recheado</p>
+                    <p>Arroz integral</p>
+                    <p>Seleta de legumes</p>
+                    <p>Antepasto de berinjela</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 09: Panquecas de frango, arroz integral, seleta de legumes e antepasto de berinjela" data-price="19.00">
+                    <h2>Opção 09</h2>
+                    <p>Panquecas de frango</p>
+                    <p>Arroz integral</p>
+                    <p>Seleta de legumes</p>
+                    <p>Antepasto de berinjela</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 10: Frango desfiado, cenoura refogada na manteiga, arroz e feijão" data-price="15.50">
+                    <h2>Opção 10</h2>
+                    <p>Frango desfiado</p>
+                    <p>Cenoura refogada na manteiga</p>
+                    <p>Arroz</p>
+                    <p>Feijão</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 11: Filé de frango ao molho madeira, macarrão no alho e óleo, ervilhas refogada e cenoura refogada na manteiga" data-price="18.50">
+                    <h2>Opção 11</h2>
+                    <p>Filé de frango ao molho madeira</p>
+                    <p>Macarrão no alho e óleo</p>
+                    <p>Ervilhas refogada</p>
+                    <p>Cenoura refogada na manteiga</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 12: Carne moída, purê de abóbora e arroz" data-price="14.00">
+                    <h2>Opção 12</h2>
+                    <p>Carne moída</p>
+                    <p>Purê de abóbora</p>
+                    <p>Arroz</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 13: Frango empanado, macarrão ao alho e óleo, ervilhas refogada, brócolis e batata rústica" data-price="17.50">
+                    <h2>Opção 13</h2>
+                    <p>Frango empanado</p>
+                    <p>Macarrão ao alho e óleo</p>
+                    <p>Ervilhas refogada</p>
+                    <p>Brócolis</p>
+                    <p>Batata rústica</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 14: Frango empanado, cabotiá assada, macarrão ao alho e óleo e ervilhas refogada" data-price="17.00">
+                    <h2>Opção 14</h2>
+                    <p>Frango empanado</p>
+                    <p>Cabotiá assada</p>
+                    <p>Macarrão ao alho e óleo</p>
+                    <p>Ervilhas refogada</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
+                </div>
+
+                <div class="card" data-opcao="Opção 15: Bife ao molho, purê de aipim, brócolis e batata rústica" data-price="16.00">
+                    <h2>Opção 15</h2>
+                    <p>Bife ao molho</p>
+                    <p>Purê de aipim</p>
+                    <p>Brócolis</p>
+                    <p>Batata rústica</p>
+                    <button type="button" onclick="adicionarOpcao(this)">Adicionar</button>
                 </div>
             </div>
 
             <div class="total">Total: R$ <span id="total-amount">0,00</span></div>
 
-            <button type="submit" class="submit-button">Adicionar Pedido</button>
+            <button type="submit" class="submit-button">Finalizar Pedido</button>
         </form>
 
         <div class="cart">
             <h2>Resumo do Pedido</h2>
             <ul id="pedido-list">
-            
-            </ul>
+                </ul>
             <button class="cart-button" id="whatsapp-button">Enviar para WhatsApp</button>
         </div>
     </div>
@@ -103,13 +186,14 @@
             <ul class="contact-list">
                 <li>
                     <a href="https://api.whatsapp.com/send?phone=5573999099040" target="_blank">
-                        <i class="fab fa-whatsapp"></i> 
+                        <i class="fab fa-whatsapp"></i>
                     </a>
                 </li>
                 <li>
                     <a href="https://instagram.com/fabioniloss" target="_blank">
-                        <i class="fab fa-instagram"></i> 
+                        <i class="fab fa-instagram"></i>
                     </a>
+                </li>
             </ul>
         </div>
     </footer>

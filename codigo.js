@@ -1,102 +1,116 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('quentinha-form');
+document.addEventListener('DOMContentLoaded', () => {
     const pedidoList = document.getElementById('pedido-list');
+    const totalAmountSpan = document.getElementById('total-amount');
     const whatsappButton = document.getElementById('whatsapp-button');
-    const totalAmount = document.getElementById('total-amount');
-    const acompanhamentoCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]');
+    const quentinhaForm = document.getElementById('quentinha-form');
 
-    let pedidos = [];
-    const valorPorPedido = 20; 
+    let selectedOptions = [];
+    let totalPrice = 0;
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
+    // Function to add an option to the order
+    window.adicionarOpcao = (button) => {
+        const card = button.closest('.card');
+        const optionText = card.dataset.opcao;
+        const optionPrice = parseFloat(card.dataset.price);
+
+        selectedOptions.push({ text: optionText, price: optionPrice });
+        updatePedidoSummary();
+    };
+
+    // Function to update the order summary and total price
+    const updatePedidoSummary = () => {
+        pedidoList.innerHTML = ''; // Clear previous list
+        totalPrice = 0;
+
+        selectedOptions.forEach((item, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${item.text} - R$ ${item.price.toFixed(2)}`;
+
+            // Add a remove button for each item
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remover';
+            removeButton.classList.add('remove-item-button');
+            removeButton.onclick = () => removerOpcao(index);
+            listItem.appendChild(removeButton);
+
+            pedidoList.appendChild(listItem);
+            totalPrice += item.price;
+        });
+
+        totalAmountSpan.textContent = totalPrice.toFixed(2);
+    };
+
+    // Function to remove an option from the order
+    const removerOpcao = (index) => {
+        selectedOptions.splice(index, 1);
+        updatePedidoSummary();
+    };
+
+    // Handle form submission (Finalizar Pedido button)
+    quentinhaForm.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent default form submission
 
         const nome = document.getElementById('nome').value;
         const rua = document.getElementById('rua').value;
         const bairro = document.getElementById('bairro').value;
-        const proteina = document.getElementById('proteina').value;
-        const salada = document.getElementById('salada').value;
-        const acompanhamentos = Array.from(document.querySelectorAll('#acompanhamentos input:checked'))
-            .map(acomp => acomp.value);
 
-        const pedido = {
-            nome,
-            rua,
-            bairro,
-            proteina,
-            salada,
-            acompanhamentos
-        };
+        if (selectedOptions.length === 0) {
+            alert('Por favor, selecione pelo menos uma opção de quentinha.');
+            return;
+        }
 
-        pedidos.push(pedido);
-        atualizarListaPedidos();
-        atualizarTotal();
+        let orderDetails = `*Pedido de Quentinhas - Neide Marmitas Fit Congeladas*\n\n`;
+        orderDetails += `*Dados do Cliente:*\n`;
+        orderDetails += `Nome: ${nome}\n`;
+        orderDetails += `Rua: ${rua}\n`;
+        orderDetails += `Bairro: ${bairro}\n\n`;
+
+        orderDetails += `*Itens do Pedido:*\n`;
+        selectedOptions.forEach((item, index) => {
+            orderDetails += `${index + 1}. ${item.text} - R$ ${item.price.toFixed(2)}\n`;
+        });
+        orderDetails += `\n*Total a Pagar: R$ ${totalPrice.toFixed(2)}*\n\n`;
+        orderDetails += `Obrigado pelo seu pedido!`;
+
+        // Store order details in a temporary way (e.g., localStorage) or process it
+        console.log(orderDetails); // For demonstration, log to console
+
+        // Optionally, clear the form and selected options after submission
+        quentinhaForm.reset();
+        selectedOptions = [];
+        updatePedidoSummary();
+        alert('Pedido finalizado! Por favor, clique em "Enviar para WhatsApp" para enviar o resumo.');
     });
 
-    whatsappButton.addEventListener('click', function() {
-        const mensagem = gerarMensagemWhatsApp(pedidos);
-        window.open(`https://wa.me/5573981161041?text=${encodeURIComponent(mensagem)}`);
-    });
 
-    function atualizarListaPedidos() {
-        pedidoList.innerHTML = '';
-        pedidos.forEach((pedido, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <p><strong>Nome:</strong> ${pedido.nome}</p>
-                <p><strong>Rua:</strong> ${pedido.rua}</p>
-                <p><strong>Bairro:</strong> ${pedido.bairro}</p>
-                <p><strong>Proteína:</strong> ${pedido.proteina}</p>
-                <p><strong>Salada:</strong> ${pedido.salada}</p>
-                <p><strong>Acompanhamentos:</strong> ${pedido.acompanhamentos.join(', ')}</p>
-                <button onclick="removerPedido(${index})">Excluir</button>
-            `;
-            pedidoList.appendChild(li);
+    // Handle WhatsApp button click
+    whatsappButton.addEventListener('click', () => {
+        const nome = document.getElementById('nome').value;
+        const rua = document.getElementById('rua').value;
+        const bairro = document.getElementById('bairro').value;
+
+        if (selectedOptions.length === 0) {
+            alert('Por favor, selecione pelo menos uma opção de quentinha antes de enviar para o WhatsApp.');
+            return;
+        }
+
+        let whatsappMessage = `Olá, Neide! Gostaria de fazer um pedido de quentinhas.\n\n`;
+        whatsappMessage += `*Dados do Cliente:*\n`;
+        whatsappMessage += `Nome: ${nome}\n`;
+        whatsappMessage += `Rua: ${rua}\n`;
+        whatsappMessage += `Bairro: ${bairro}\n\n`;
+
+        whatsappMessage += `*Itens do Pedido:*\n`;
+        selectedOptions.forEach((item, index) => {
+            whatsappMessage += `${index + 1}. ${item.text} - R$ ${item.price.toFixed(2)}\n`;
         });
-    }
+        whatsappMessage += `\n*Total a Pagar: R$ ${totalPrice.toFixed(2)}*\n\n`;
+        whatsappMessage += `Obrigado!`;
 
-    function atualizarTotal() {
-        const total = pedidos.length * valorPorPedido;
-        totalAmount.textContent = total.toFixed(2);
-    }
+        const whatsappNumber = '5573998253365'; // The number from the image
+        const encodedMessage = encodeURIComponent(whatsappMessage);
+        const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
 
-    window.removerPedido = function(index) {
-        pedidos.splice(index, 1);
-        atualizarListaPedidos();
-        atualizarTotal();
-    };
-
-    function gerarMensagemWhatsApp(pedidos) {
-        let mensagem = 'Olá,segue o resumo do pedido(s):\n\n';
-        pedidos.forEach((pedido, index) => {
-            mensagem += `🍽️Pedido ${index + 1}:\n`;
-            mensagem += `- Nome: ${pedido.nome}\n`;
-            mensagem += `- Rua: ${pedido.rua}\n`;
-            mensagem += `- Bairro: ${pedido.bairro}\n`;
-            mensagem += `- Proteína: ${pedido.proteina}\n`;
-            mensagem += `- Salada: ${pedido.salada}\n`;
-            mensagem += `- Acompanhamentos: ${pedido.acompanhamentos.join(', ')}\n\n`;
-        });
-        const total = pedidos.length * valorPorPedido;
-        mensagem += `Total: R$ ${total.toFixed(2)}`;
-        return mensagem;
-    }
-
-    acompanhamentoCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const checkedCheckboxes = document.querySelectorAll('#acompanhamentos input[type="checkbox"]:checked');
-            if (checkedCheckboxes.length > 4) {
-                window.alert('Você só pode selecionar até 4 opções.');
-                this.checked = false;
-            } else if (checkedCheckboxes.length === 4) {
-                acompanhamentoCheckboxes.forEach(box => {
-                    if (!box.checked) {
-                        box.disabled = true;
-                    }
-                });
-            } else {
-                acompanhamentoCheckboxes.forEach(box => box.disabled = false);
-            }
-        });
+        window.open(whatsappURL, '_blank');
     });
 });

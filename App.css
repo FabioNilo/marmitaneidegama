@@ -66,6 +66,45 @@
     text-align: right;
     color: var(--dark-brown);
   }
+
+   .card {
+      background-color: #fff;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 300px;
+      margin-bottom: 20px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      border-color: #ff6600;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 10px 0;
+    }
+
+    .card button {
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .card button:hover {
+      background-color: #e65c00;
+    }
+
   
   .submit-button {
     background-color: var(--dark-green);
@@ -160,7 +199,7 @@
   .logo {
     width: 100px; /* Ajuste o tamanho conforme necessário */
     height: auto;
-    border-radius: 50%; /* Para que a imagem tenha um formato circular */
+    border-radius: 35%; /* Para que a imagem tenha um formato circular */
   }
   
   .cart-button {
