@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedOptions = [];
     let totalPrice = 0;
 
-    // Function to add an option to the order
+    
     window.adicionarOpcao = (button) => {
         const card = button.closest('.card');
         const optionText = card.dataset.opcao;
@@ -17,16 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePedidoSummary();
     };
 
-    // Function to update the order summary and total price
+    
     const updatePedidoSummary = () => {
-        pedidoList.innerHTML = ''; // Clear previous list
+        pedidoList.innerHTML = ''; 
         totalPrice = 0;
 
         selectedOptions.forEach((item, index) => {
             const listItem = document.createElement('li');
             listItem.textContent = `${item.text} - R$ ${item.price.toFixed(2)}`;
 
-            // Add a remove button for each item
+            
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Remover';
             removeButton.classList.add('remove-item-button');
@@ -40,15 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
         totalAmountSpan.textContent = totalPrice.toFixed(2);
     };
 
-    // Function to remove an option from the order
+  
     const removerOpcao = (index) => {
         selectedOptions.splice(index, 1);
         updatePedidoSummary();
     };
 
-    // Handle form submission (Finalizar Pedido button)
+   
     quentinhaForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); 
 
         const nome = document.getElementById('nome').value;
         const rua = document.getElementById('rua').value;
@@ -56,6 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (selectedOptions.length === 0) {
             alert('Por favor, selecione pelo menos uma opção de quentinha.');
+            return;
+        }
+
+        if(nome === ""){
+            alert('Insira seu nome, para continuar o pedido');
             return;
         }
 
@@ -72,10 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
         orderDetails += `\n*Total a Pagar: R$ ${totalPrice.toFixed(2)}*\n\n`;
         orderDetails += `Obrigado pelo seu pedido!`;
 
-        // Store order details in a temporary way (e.g., localStorage) or process it
-        console.log(orderDetails); // For demonstration, log to console
+        
+        console.log(orderDetails); 
 
-        // Optionally, clear the form and selected options after submission
+        
         quentinhaForm.reset();
         selectedOptions = [];
         updatePedidoSummary();
@@ -83,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Handle WhatsApp button click
+    
     whatsappButton.addEventListener('click', () => {
         const nome = document.getElementById('nome').value;
         const rua = document.getElementById('rua').value;
@@ -107,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         whatsappMessage += `\n*Total a Pagar: R$ ${totalPrice.toFixed(2)}*\n\n`;
         whatsappMessage += `Obrigado!`;
 
-        const whatsappNumber = '5573998253365'; // The number from the image
+        const whatsappNumber = '5573998253365'; 
         const encodedMessage = encodeURIComponent(whatsappMessage);
         const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
 
