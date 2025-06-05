@@ -1,194 +1,27 @@
+
 :root {
-    --primary-red: #D32F2F; 
-    --primary-white: #FFFFFF; 
-    --light-gray: #f2f2f2; 
-    --medium-gray: #e0e0e0; 
-    --dark-gray: #757575; 
-    --dark-brown: #4E342E; 
-    --hover-red: #C12727; 
-    --dark-green: #2e8b57;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--light-gray);
-  }
-  
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: var(--primary-white);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  h1 {
-    text-align: center;
-    color: var(--primary-red);
-  }
-  
-  .quentinha-form {
-    background-color: var(--primary-white);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    color: black;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: var(--dark-brown);
-  }
-  
-  select, input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid var(--medium-gray);
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: var(--primary-white);
-    color: black;
-  }
-  
-  .total {
-    font-weight: bold;
-    font-size: 18px;
-    margin-top: 20px;
-    text-align: right;
-    color: var(--dark-brown);
-  }
+  --primary-red: #d32f2f;
+  --primary-white: #ffffff;
+  --light-gray: #f2f2f2;
+  --medium-gray: #e0e0e0;
+  --dark-brown: #4e342e;
+  --dark-green: #2e8b57;
+  --hover-red: #c12727;
+}
 
-   .card {
-      background-color: #fff;
-      border: 2px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px;
-      width: 300px;
-      margin-bottom: 20px;
-      transition: transform 0.2s, border-color 0.2s;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .card:hover {
-      transform: scale(1.02);
-      border-color: #ff6600;
-    }
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--light-gray);
+  color: #000;
+  line-height: 1.4;
+}
 
-    .card h2 {
-      margin-top: 0;
-      font-size: 20px;
-      text-decoration: underline;
-      padding: 10px;
-      width: 95px;
-      
-    }
-
-    .card p {
-      margin: 10px 0;
-    }
-
-    .card button {
-      background-color: #ff6600;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .card button:hover {
-      background-color: #e65c00;
-    }
-
-  
-  .submit-button {
-    background-color: var(--dark-green);
-    color: var(--primary-white);
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    width: 100%;
-    transition: background-color 0.3s;
-  }
-  
-  .submit-button:hover {
-    background-color: var(--dark-green);
-  }
-  
-  .submit-button:disabled {
-    background-color: var(--medium-gray);
-    cursor: not-allowed;
-  }
-  
-  .checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    background-color: var(--medium-gray);
-    padding: 5px 10px;
-    border-radius: 4px;
-  }
-  
-  .checkbox-label input {
-    margin-right: 5px;
-  }
-  
-  input[type="checkbox"] {
-    cursor: pointer;
-  }
-  
-  input[type="checkbox"]:disabled {
-    cursor: not-allowed;
-  }
-  
-  /* Estilos para o autocomplete */
-  .autocomplete {
-    position: relative;
-  }
-  
-  .autocomplete-items {
-    position: absolute;
-    border: 1px solid var(--medium-gray);
-    border-top: none;
-    z-index: 99;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: var(--primary-white);
-  }
-  
-  .autocomplete-items div {
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .autocomplete-items div:hover {
-    background-color: var(--light-gray);
-    color:black;
-  }
-  
-  /* Estilo para as imagens */
   .food-image {
     width: 50px;
     height: 50px;
@@ -201,72 +34,198 @@
   }
   
   .logo {
-    width: 100px; /* Ajuste o tamanho conforme necessário */
+    width: 100px; 
     height: auto;
-    border-radius: 35%; /* Para que a imagem tenha um formato circular */
-  }
-  
-  .cart-button {
-    background-color: var(--dark-green);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    width: 100%;
-  }
-  
-  .cart-button:hover {
-    background-color: #3cb371;
-  }
-  
-  .cart {
-    background-color: var(--off-white);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .cart h2 {
-    color: var(--dark-green);
-    margin-bottom: 15px;
-  }
-  
-  .cart ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .cart ul li {
-    background-color: white;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-  }
-  
-  .cart ul li p {
-    margin: 5px 0;
-    color:black;
-  }
-  
-  .cart ul li button {
-    background-color: var(--dark-green);
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .cart ul li button:hover {
-    background-color: #3cb371;
+    border-radius: 35%; 
   }
 
-  /* Footer Styles */
+.container {
+  max-width: 1024px; 
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--primary-white);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: var(--primary-red);
+  margin-bottom: 20px;
+}
+
+.quentinha-form {
+  background-color: var(--primary-white);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: var(--dark-brown);
+  font-size: 16px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--medium-gray);
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: var(--primary-white);
+  color: #000;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
+.card {
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  border-color: var(--hover-red);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 20px;
+  text-decoration: underline;
+  color: var(--dark-brown);
+  padding-bottom: 10px;
+}
+
+.card p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #000;
+}
+
+.card button {
+  background-color: var(--hover-red);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.card button:hover {
+  background-color: #e65c00;
+}
+
+
+.total {
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 20px;
+  text-align: right;
+  color: var(--dark-brown);
+}
+
+.submit-button {
+  background-color: var(--dark-green);
+  color: var(--primary-white);
+  border: none;
+  padding: 12px 0;
+  font-size: 18px;
+  margin-top: 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #276749; 
+}
+
+.submit-button:disabled {
+  background-color: var(--medium-gray);
+  cursor: not-allowed;
+}
+
+.cart {
+  background-color: var(--primary-white);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+.cart h2 {
+  color: var(--dark-green);
+  margin-bottom: 15px;
+}
+
+.cart ul {
+  list-style: none;
+  padding: 0;
+}
+
+.cart ul li {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.cart ul li p {
+  margin: 5px 0;
+  color: #000;
+}
+
+.cart ul li button {
+  background-color: var(--dark-green);
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.cart ul li button:hover {
+  background-color: #3cb371;
+}
+
+.cart-button {
+  background-color: var(--dark-green);
+  color: #fff;
+  border: none;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.cart-button:hover {
+  background-color: #3cb371;
+}
+
 footer {
   background-color: #333;
   color: #fff;
@@ -280,7 +239,7 @@ footer {
 }
 
 .contact-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
   margin: 10px 0 0 0;
 }
@@ -293,8 +252,74 @@ footer {
 .contact-list a {
   color: #fff;
   text-decoration: none;
+  font-size: 20px;
 }
 
 .contact-list a:hover {
   text-decoration: underline;
+}
+
+
+@media (max-width: 900px) {
+  .card h2 {
+    font-size: 18px;
+  }
+  .card p {
+    font-size: 14px;
+  }
+  .card button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .submit-button,
+  .cart-button {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+}
+
+
+@media (max-width: 600px) {
+  container {
+    padding: 10px;
+  }
+  .card-container {
+    gap: 10px; 
+  }
+  .card {
+    padding: 10px; 
+  }
+  .card h2 {
+    font-size: 16px;
+    padding-bottom: 6px;
+  }
+  .card p {
+    font-size: 12px;
+    margin: 6px 0;
+  }
+  .card button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  .total {
+    font-size: 16px;
+  }
+  .submit-button,
+  .cart-button {
+    font-size: 14px;
+    padding: 8px 0;
+  }
+  .cart {
+    padding: 10px;
+  }
+  .cart h2 {
+    font-size: 16px;
+  }
+  .cart ul li {
+    padding: 8px;
+  }
+  .cart ul li button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
 }
