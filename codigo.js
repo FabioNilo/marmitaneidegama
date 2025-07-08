@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCcvw-zWYRTANn25HMgx688PmNYcI3dyNZNf_g1kADj8kQnBfIJojYoRqHPkI3DcJD/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBBnt3VFlm4vlHRnkS8sV6-VN-eknxOzPAoOauOpurKS3EjKzsAP46BNHBXPfMrRM1/exec';
 
 async function enviarParaGoogleSheets(dadosPedido) {
     try {
