@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBBnt3VFlm4vlHRnkS8sV6-VN-eknxOzPAoOauOpurKS3EjKzsAP46BNHBXPfMrRM1/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoOm_pLJJU0U9S4kZGQwrhR5d9lWK26DWCVjtQD0qU9dsYtQsNBoPamj18EEEeumIe/exec';
 
 async function enviarParaGoogleSheets(dadosPedido) {
     try {
@@ -6,6 +6,7 @@ async function enviarParaGoogleSheets(dadosPedido) {
         
         const response = await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
+            mode:'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
