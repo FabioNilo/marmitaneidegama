@@ -1,3 +1,92 @@
+
+    const GOOGLE_SHEETS_CONFIG = {
+    apiKey: 'AIzaSyAL9OAToGJ_kv6zJeuECAJagRb5CqxRxPU',
+    spreadsheetId: 'd/1HMeFpbAEswFIoeqZWvXt1j44h3Vegsvg0FgQrprNs4w/edit?gid=0#gid=0',
+    range: 'Sheet1!A:G' 
+};
+
+    function initializeGoogleSheetsAPI() {
+    return new Promise((resolve, reject) => {
+        gapi.load('client', async () => {
+            try {
+                await gapi.client.init({
+                    apiKey: GOOGLE_SHEETS_CONFIG.apiKey,
+                    discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+                });
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
+        });
+    });
+  }
+
+  async function enviarParaGoogleSheets(dadosPedido) {
+    try {
+        
+        const response = await gapi.client.sheets.spreadsheets.values.get({
+            spreadsheetId: GOOGLE_SHEETS_CONFIG.spreadsheetId,
+            range: GOOGLE_SHEETS_CONFIG.range,
+        });
+
+        const numRows = response.result.values ? response.result.values.length : 1;
+        const nextRow = numRows + 1;
+
+       
+        const values = [[
+            dadosPedido.dataHora,
+            dadosPedido.nomeCliente,
+            dadosPedido.rua,
+            dadosPedido.bairro,
+            dadosPedido.itens,
+            dadosPedido.total,
+            dadosPedido.status
+        ]];
+
+       
+        await gapi.client.sheets.spreadsheets.values.update({
+            spreadsheetId: GOOGLE_SHEETS_CONFIG.spreadsheetId,
+            range: `Sheet1!A${nextRow}:G${nextRow}`,
+            valueInputOption: 'RAW',
+            resource: { values: values }
+        });
+
+        return { success: true, message: 'Dados enviados com sucesso!' };
+    } catch (error) {
+        console.error('Erro ao enviar dados:', error);
+        return { success: false, message: 'Erro ao enviar dados: ' + error.message };
+    }
+}
+
+function showLoadingIndicator(show = true) {
+    const loadingDiv = document.getElementById('loading-indicator') || createLoadingIndicator();
+    loadingDiv.style.display = show ? 'block' : 'none';
+}
+function createLoadingIndicator() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-indicator';
+    loadingDiv.innerHTML = `
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background: rgba(0,0,0,0.8); color: white; padding: 20px; 
+                    border-radius: 10px; z-index: 1000; text-align: center;">
+            <div style="margin-bottom: 10px;">📊 Salvando pedido...</div>
+            <div style="width: 30px; height: 30px; border: 3px solid #f3f3f3; 
+                        border-top: 3px solid #3498db; border-radius: 50%; 
+                        animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        </div>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    `;
+    loadingDiv.style.display = 'none';
+    document.body.appendChild(loadingDiv);
+    return loadingDiv;
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const pedidoList = document.getElementById('pedido-list');
     const totalAmountSpan = document.getElementById('total-amount');
@@ -118,4 +207,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.open(whatsappURL, '_blank');
     });
+
 });
