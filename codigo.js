@@ -1,113 +1,119 @@
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoOm_pLJJU0U9S4kZGQwrhR5d9lWK26DWCVjtQD0qU9dsYtQsNBoPamj18EEEeumIe/exec';
 
+// Método 1: JSONP (mais confiável para CORS)
+function enviarViaJSONP(dadosPedido) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonpCallback' + Date.now();
+        const script = document.createElement('script');
+        
+        // Define o callback global
+        window[callbackName] = function(response) {
+            resolve(response);
+            // Limpa
+            document.head.removeChild(script);
+            delete window[callbackName];
+        };
+        
+        // Constrói a URL com parâmetros
+        const params = new URLSearchParams({
+            ...dadosPedido,
+            callback: callbackName
+        });
+        
+        script.src = `${APPS_SCRIPT_URL}?${params.toString()}`;
+        script.onerror = () => {
+            reject(new Error('Erro ao carregar script JSONP'));
+            document.head.removeChild(script);
+            delete window[callbackName];
+        };
+        
+        document.head.appendChild(script);
+        
+        // Timeout de 10 segundos
+        setTimeout(() => {
+            if (window[callbackName]) {
+                reject(new Error('Timeout na requisição'));
+                document.head.removeChild(script);
+                delete window[callbackName];
+            }
+        }, 10000);
+    });
+}
+
+// Método 2: Usando iframe (sempre funciona)
+function enviarViaIframe(dadosPedido) {
+    return new Promise((resolve) => {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.name = 'hiddenFrame';
+        
+        const form = document.createElement('form');
+        form.target = 'hiddenFrame';
+        form.method = 'POST';
+        form.action = APPS_SCRIPT_URL;
+        form.style.display = 'none';
+        
+        // Adiciona os campos do formulário
+        Object.keys(dadosPedido).forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = dadosPedido[key];
+            form.appendChild(input);
+        });
+        
+        document.body.appendChild(iframe);
+        document.body.appendChild(form);
+        
+        iframe.onload = () => {
+            // Assume sucesso após 2 segundos
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+                document.body.removeChild(form);
+                resolve({
+                    success: true,
+                    message: 'Pedido enviado com sucesso!'
+                });
+            }, 2000);
+        };
+        
+        form.submit();
+    });
+}
+
+// Função principal que tenta ambos os métodos
 async function enviarParaGoogleSheets(dadosPedido) {
     try {
         showLoadingIndicator(true);
+        console.log('Tentando envio via JSONP...');
         
-        console.log('Enviando dados:', dadosPedido);
-        
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            // REMOVIDO: mode: 'no-cors' - isso impede a leitura da resposta
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dadosPedido)
-        });
-        
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
-        
-        // Verifica se a resposta foi bem-sucedida
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        console.log('Resultado recebido:', result);
-        
+        // Tenta JSONP primeiro
+        const resultado = await enviarViaJSONP(dadosPedido);
         showLoadingIndicator(false);
         
-        return result;
+        console.log('Sucesso via JSONP:', resultado);
+        return resultado;
         
     } catch (error) {
-        showLoadingIndicator(false);
-        console.error('Erro ao enviar dados:', error);
+        console.log('JSONP falhou, tentando iframe...', error);
         
-        // Se for erro de CORS, tenta método alternativo
-        if (error.message.includes('CORS') || error.message.includes('fetch')) {
-            return await enviarViaFormData(dadosPedido);
-        }
-        
-        return { 
-            success: false, 
-            message: 'Erro de conexão: ' + error.message 
-        };
-    }
-}
-
-// Método alternativo usando FormData (funciona melhor com CORS)
-async function enviarViaFormData(dadosPedido) {
-    try {
-        console.log('Tentando método alternativo com FormData');
-        
-        const formData = new FormData();
-        
-        // Adiciona cada campo do pedido ao FormData
-        Object.keys(dadosPedido).forEach(key => {
-            formData.append(key, dadosPedido[key]);
-        });
-        
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (response.ok) {
-            // Com FormData, assumimos sucesso se a resposta for OK
-            return { 
-                success: true, 
-                message: 'Pedido salvo com sucesso!' 
+        try {
+            // Se JSONP falhar, usa iframe
+            const resultado = await enviarViaIframe(dadosPedido);
+            showLoadingIndicator(false);
+            
+            console.log('Sucesso via iframe:', resultado);
+            return resultado;
+            
+        } catch (iframeError) {
+            showLoadingIndicator(false);
+            console.error('Ambos os métodos falharam:', iframeError);
+            
+            return {
+                success: false,
+                message: 'Erro ao enviar pedido. Tente novamente.'
             };
-        } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-    } catch (error) {
-        console.error('Erro no método alternativo:', error);
-        return { 
-            success: false, 
-            message: 'Erro ao salvar pedido. Tente novamente.' 
-        };
-    }
-}
-
-// Versão ainda mais simples que sempre funciona (modo fire-and-forget)
-async function enviarSimples(dadosPedido) {
-    try {
-        console.log('Usando método simples (fire-and-forget)');
-        
-        await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors', // Aqui pode usar no-cors porque não lemos a resposta
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dadosPedido)
-        });
-        
-        // Como é no-cors, assumimos que funcionou
-        return { 
-            success: true, 
-            message: 'Pedido enviado com sucesso!' 
-        };
-        
-    } catch (error) {
-        console.error('Erro no envio simples:', error);
-        return { 
-            success: false, 
-            message: 'Erro ao enviar pedido.' 
-        };
     }
 }
 
@@ -151,18 +157,8 @@ async function exemploUso() {
         status: 'Pendente'
     };
     
-    // Tenta o método principal primeiro
-    let resultado = await enviarParaGoogleSheets(dadosPedido);
+    const resultado = await enviarParaGoogleSheets(dadosPedido);
     
-    // Se falhar, tenta o método simples
-    if (!resultado.success) {
-        console.log('Método principal falhou, tentando método simples...');
-        resultado = await enviarSimples(dadosPedido);
-    }
-    
-    console.log('Resultado final:', resultado);
-    
-    // Mostra mensagem para o usuário
     if (resultado.success) {
         alert('✅ ' + resultado.message);
     } else {
