@@ -1,29 +1,44 @@
-
-    const GOOGLE_SHEETS_CONFIG = {
+const GOOGLE_SHEETS_CONFIG = {
     apiKey: 'AIzaSyAL9OAToGJ_kv6zJeuECAJagRb5CqxRxPU',
     spreadsheetId: '1HMeFpbAEswFIoeqZWvXt1j44h3Vegsvg0FgQrprNs4w',
     range: 'Página1!A:G' 
 };
 
-    function initializeGoogleSheetsAPI() {
+let isGoogleSheetsInitialized = false;
+
+function initializeGoogleSheetsAPI() {
     return new Promise((resolve, reject) => {
+        if (typeof gapi === 'undefined') {
+            reject(new Error('Google API não foi carregada. Adicione <script src="https://apis.google.com/js/api.js"></script> ao seu HTML.'));
+            return;
+        }
+
         gapi.load('client', async () => {
             try {
                 await gapi.client.init({
                     apiKey: GOOGLE_SHEETS_CONFIG.apiKey,
                     discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
                 });
+                isGoogleSheetsInitialized = true;
+                console.log('Google Sheets API inicializada com sucesso');
                 resolve();
             } catch (error) {
+                console.error('Erro ao inicializar Google Sheets API:', error);
                 reject(error);
             }
         });
     });
-  }
+}
 
-  async function enviarParaGoogleSheets(dadosPedido) {
+async function enviarParaGoogleSheets(dadosPedido) {
+    if (!isGoogleSheetsInitialized) {
+        return { success: false, message: 'Google Sheets API não foi inicializada' };
+    }
+
     try {
-        
+        showLoadingIndicator(true);
+
+        // Buscar número de linhas existentes
         const response = await gapi.client.sheets.spreadsheets.values.get({
             spreadsheetId: GOOGLE_SHEETS_CONFIG.spreadsheetId,
             range: GOOGLE_SHEETS_CONFIG.range,
@@ -32,7 +47,7 @@
         const numRows = response.result.values ? response.result.values.length : 1;
         const nextRow = numRows + 1;
 
-       
+        // Preparar dados para inserção
         const values = [[
             dadosPedido.dataHora,
             dadosPedido.nomeCliente,
@@ -43,17 +58,19 @@
             dadosPedido.status
         ]];
 
-       
+        // Inserir dados
         await gapi.client.sheets.spreadsheets.values.update({
             spreadsheetId: GOOGLE_SHEETS_CONFIG.spreadsheetId,
-            range: `Sheet1!A${nextRow}:G${nextRow}`,
+            range: `Página1!A${nextRow}:G${nextRow}`,
             valueInputOption: 'RAW',
             resource: { values: values }
         });
 
-        return { success: true, message: 'Dados enviados com sucesso!' };
+        showLoadingIndicator(false);
+        return { success: true, message: 'Dados enviados com sucesso para o Google Sheets!' };
     } catch (error) {
-        console.error('Erro ao enviar dados:', error);
+        showLoadingIndicator(false);
+        console.error('Erro ao enviar dados para Google Sheets:', error);
         return { success: false, message: 'Erro ao enviar dados: ' + error.message };
     }
 }
@@ -62,6 +79,7 @@ function showLoadingIndicator(show = true) {
     const loadingDiv = document.getElementById('loading-indicator') || createLoadingIndicator();
     loadingDiv.style.display = show ? 'block' : 'none';
 }
+
 function createLoadingIndicator() {
     const loadingDiv = document.createElement('div');
     loadingDiv.id = 'loading-indicator';
