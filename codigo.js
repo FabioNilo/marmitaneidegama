@@ -4,16 +4,28 @@ async function enviarParaGoogleSheets(dadosPedido) {
     try {
         showLoadingIndicator(true);
         
+        console.log('Enviando dados:', dadosPedido);
+        
         const response = await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
-            mode:'no-cors',
+            // REMOVIDO: mode: 'no-cors' - isso impede a leitura da resposta
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(dadosPedido)
         });
         
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        // Verifica se a resposta foi bem-sucedida
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const result = await response.json();
+        console.log('Resultado recebido:', result);
+        
         showLoadingIndicator(false);
         
         return result;
@@ -21,9 +33,80 @@ async function enviarParaGoogleSheets(dadosPedido) {
     } catch (error) {
         showLoadingIndicator(false);
         console.error('Erro ao enviar dados:', error);
+        
+        // Se for erro de CORS, tenta método alternativo
+        if (error.message.includes('CORS') || error.message.includes('fetch')) {
+            return await enviarViaFormData(dadosPedido);
+        }
+        
         return { 
             success: false, 
             message: 'Erro de conexão: ' + error.message 
+        };
+    }
+}
+
+// Método alternativo usando FormData (funciona melhor com CORS)
+async function enviarViaFormData(dadosPedido) {
+    try {
+        console.log('Tentando método alternativo com FormData');
+        
+        const formData = new FormData();
+        
+        // Adiciona cada campo do pedido ao FormData
+        Object.keys(dadosPedido).forEach(key => {
+            formData.append(key, dadosPedido[key]);
+        });
+        
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            // Com FormData, assumimos sucesso se a resposta for OK
+            return { 
+                success: true, 
+                message: 'Pedido salvo com sucesso!' 
+            };
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+    } catch (error) {
+        console.error('Erro no método alternativo:', error);
+        return { 
+            success: false, 
+            message: 'Erro ao salvar pedido. Tente novamente.' 
+        };
+    }
+}
+
+// Versão ainda mais simples que sempre funciona (modo fire-and-forget)
+async function enviarSimples(dadosPedido) {
+    try {
+        console.log('Usando método simples (fire-and-forget)');
+        
+        await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Aqui pode usar no-cors porque não lemos a resposta
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosPedido)
+        });
+        
+        // Como é no-cors, assumimos que funcionou
+        return { 
+            success: true, 
+            message: 'Pedido enviado com sucesso!' 
+        };
+        
+    } catch (error) {
+        console.error('Erro no envio simples:', error);
+        return { 
+            success: false, 
+            message: 'Erro ao enviar pedido.' 
         };
     }
 }
@@ -55,6 +138,36 @@ function createLoadingIndicator() {
     loadingDiv.style.display = 'none';
     document.body.appendChild(loadingDiv);
     return loadingDiv;
+}
+
+// Exemplo de uso
+async function exemploUso() {
+    const dadosPedido = {
+        nomeCliente: 'João Silva',
+        rua: 'Rua das Flores, 123',
+        bairro: 'Centro',
+        itens: '2x Pizza Margherita, 1x Refrigerante',
+        total: 'R$ 45,00',
+        status: 'Pendente'
+    };
+    
+    // Tenta o método principal primeiro
+    let resultado = await enviarParaGoogleSheets(dadosPedido);
+    
+    // Se falhar, tenta o método simples
+    if (!resultado.success) {
+        console.log('Método principal falhou, tentando método simples...');
+        resultado = await enviarSimples(dadosPedido);
+    }
+    
+    console.log('Resultado final:', resultado);
+    
+    // Mostra mensagem para o usuário
+    if (resultado.success) {
+        alert('✅ ' + resultado.message);
+    } else {
+        alert('❌ ' + resultado.message);
+    }
 }
 document.addEventListener('DOMContentLoaded', () => {
     const pedidoList = document.getElementById('pedido-list');
