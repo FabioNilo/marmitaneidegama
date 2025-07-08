@@ -1,7 +1,7 @@
 
     const GOOGLE_SHEETS_CONFIG = {
     apiKey: 'AIzaSyAL9OAToGJ_kv6zJeuECAJagRb5CqxRxPU',
-    spreadsheetId: 'd/1HMeFpbAEswFIoeqZWvXt1j44h3Vegsvg0FgQrprNs4w/edit?gid=0#gid=0',
+    spreadsheetId: '1HMeFpbAEswFIoeqZWvXt1j44h3Vegsvg0FgQrprNs4w',
     range: 'Sheet1!A:G' 
 };
 
