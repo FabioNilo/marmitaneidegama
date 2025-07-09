@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwszCG4o10H2kCpZBLhCinbW5kik4kEVTJVer0WrC3MD9l1VtaOfDyJqg6s8Eyz8Yw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTRiuEs1JsvBGgMeAxLTFDCG0UgqMyJazQ6t9az23dTn363JAwXrp1CgWXmSlT8kw/exec';
 
 function enviarViaIframe(dadosPedido) {
     return new Promise((resolve, reject) => {
