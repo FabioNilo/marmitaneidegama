@@ -1,63 +1,23 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoOm_pLJJU0U9S4kZGQwrhR5d9lWK26DWCVjtQD0qU9dsYtQsNBoPamj18EEEeumIe/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwszCG4o10H2kCpZBLhCinbW5kik4kEVTJVer0WrC3MD9l1VtaOfDyJqg6s8Eyz8Yw/exec';
 
-// Método 1: JSONP (mais confiável para CORS)
-function enviarViaJSONP(dadosPedido) {
-    return new Promise((resolve, reject) => {
-        const callbackName = 'jsonpCallback' + Date.now();
-        const script = document.createElement('script');
-        
-        // Define o callback global
-        window[callbackName] = function(response) {
-            resolve(response);
-            // Limpa
-            document.head.removeChild(script);
-            delete window[callbackName];
-        };
-        
-        // Constrói a URL com parâmetros
-        const params = new URLSearchParams({
-            ...dadosPedido,
-            callback: callbackName
-        });
-        
-        script.src = `${APPS_SCRIPT_URL}?${params.toString()}`;
-        script.onerror = () => {
-            reject(new Error('Erro ao carregar script JSONP'));
-            document.head.removeChild(script);
-            delete window[callbackName];
-        };
-        
-        document.head.appendChild(script);
-        
-        // Timeout de 10 segundos
-        setTimeout(() => {
-            if (window[callbackName]) {
-                reject(new Error('Timeout na requisição'));
-                document.head.removeChild(script);
-                delete window[callbackName];
-            }
-        }, 10000);
-    });
-}
-
-// Método 2: Usando iframe (sempre funciona)
 function enviarViaIframe(dadosPedido) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';
-        iframe.name = 'hiddenFrame';
+        iframe.name = 'hiddenFrame'; // Nome para o form target
         
         const form = document.createElement('form');
-        form.target = 'hiddenFrame';
-        form.method = 'POST';
-        form.action = APPS_SCRIPT_URL;
+        form.target = 'hiddenFrame'; // Aponta para o iframe
+        form.method = 'POST';        // Essencial: POST
+        form.action = APPS_SCRIPT_URL; // URL do Apps Script
         form.style.display = 'none';
         
-        // Adiciona os campos do formulário
+        // Adiciona os campos do formulário como inputs hidden
+        // O Apps Script lerá estes como e.parameter.key
         Object.keys(dadosPedido).forEach(key => {
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = key;
+            input.name = key; // O nome do input será a chave em e.parameter
             input.value = dadosPedido[key];
             form.appendChild(input);
         });
@@ -65,106 +25,59 @@ function enviarViaIframe(dadosPedido) {
         document.body.appendChild(iframe);
         document.body.appendChild(form);
         
+        // Quando o iframe carregar a resposta do Apps Script
         iframe.onload = () => {
-            // Assume sucesso após 2 segundos
-            setTimeout(() => {
+            // Pode haver um pequeno atraso para a escrita no Sheet.
+            // Assumimos sucesso aqui, pois o Apps Script já executou e respondeu.
+            // Se o Apps Script retornar HTML com uma mensagem de erro/sucesso,
+            // você poderia tentar ler o conteúdo do iframe (mais complexo devido a CORS).
+            // Para simplicidade, assumimos sucesso ao carregar o iframe.
+            setTimeout(() => { // Pequeno delay para garantir que o Apps Script terminou
                 document.body.removeChild(iframe);
                 document.body.removeChild(form);
                 resolve({
                     success: true,
-                    message: 'Pedido enviado com sucesso!'
+                    message: 'Pedido enviado com sucesso para a planilha!'
                 });
-            }, 2000);
+            }, 500); // Meio segundo de delay
+        };
+
+        iframe.onerror = () => {
+            document.body.removeChild(iframe);
+            document.body.removeChild(form);
+            reject(new Error('Erro ao carregar iframe para envio.'));
         };
         
-        form.submit();
+        form.submit(); // Envia o formulário
     });
 }
 
-// Função principal que tenta ambos os métodos
+// ---
+
+// Função principal, agora priorizando o iframe para POST
 async function enviarParaGoogleSheets(dadosPedido) {
     try {
         showLoadingIndicator(true);
-        console.log('Tentando envio via JSONP...');
+        console.log('Tentando envio via iframe...');
         
-        // Tenta JSONP primeiro
-        const resultado = await enviarViaJSONP(dadosPedido);
+        // Usa o método de iframe
+        const resultado = await enviarViaIframe(dadosPedido);
         showLoadingIndicator(false);
         
-        console.log('Sucesso via JSONP:', resultado);
+        console.log('Sucesso no envio para a planilha:', resultado);
         return resultado;
         
     } catch (error) {
-        console.log('JSONP falhou, tentando iframe...', error);
+        showLoadingIndicator(false);
+        console.error('Erro ao enviar para Google Sheets via iframe:', error);
         
-        try {
-            // Se JSONP falhar, usa iframe
-            const resultado = await enviarViaIframe(dadosPedido);
-            showLoadingIndicator(false);
-            
-            console.log('Sucesso via iframe:', resultado);
-            return resultado;
-            
-        } catch (iframeError) {
-            showLoadingIndicator(false);
-            console.error('Ambos os métodos falharam:', iframeError);
-            
-            return {
-                success: false,
-                message: 'Erro ao enviar pedido. Tente novamente.'
-            };
-        }
+        return {
+            success: false,
+            message: 'Erro ao enviar pedido para a planilha. Tente novamente.'
+        };
     }
 }
 
-function showLoadingIndicator(show = true) {
-    const loadingDiv = document.getElementById('loading-indicator') || createLoadingIndicator();
-    loadingDiv.style.display = show ? 'block' : 'none';
-}
-
-function createLoadingIndicator() {
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = 'loading-indicator';
-    loadingDiv.innerHTML = `
-        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                    background: rgba(0,0,0,0.8); color: white; padding: 20px; 
-                    border-radius: 10px; z-index: 1000; text-align: center;">
-            <div style="margin-bottom: 10px;">📊 Salvando pedido...</div>
-            <div style="width: 30px; height: 30px; border: 3px solid #f3f3f3; 
-                        border-top: 3px solid #3498db; border-radius: 50%; 
-                        animation: spin 1s linear infinite; margin: 0 auto;"></div>
-        </div>
-        <style>
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        </style>
-    `;
-    loadingDiv.style.display = 'none';
-    document.body.appendChild(loadingDiv);
-    return loadingDiv;
-}
-
-// Exemplo de uso
-async function exemploUso() {
-    const dadosPedido = {
-        nomeCliente: 'João Silva',
-        rua: 'Rua das Flores, 123',
-        bairro: 'Centro',
-        itens: '2x Pizza Margherita, 1x Refrigerante',
-        total: 'R$ 45,00',
-        status: 'Pendente'
-    };
-    
-    const resultado = await enviarParaGoogleSheets(dadosPedido);
-    
-    if (resultado.success) {
-        alert('✅ ' + resultado.message);
-    } else {
-        alert('❌ ' + resultado.message);
-    }
-}
 document.addEventListener('DOMContentLoaded', () => {
     const pedidoList = document.getElementById('pedido-list');
     const totalAmountSpan = document.getElementById('total-amount');
@@ -214,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
    
-    quentinhaForm.addEventListener('submit', (event) => {
+    quentinhaForm.addEventListener('submit', async (event) => {
         event.preventDefault(); 
 
         const nome = document.getElementById('nome').value;
@@ -229,6 +142,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if(nome === ""){
             alert('Insira seu nome, para continuar o pedido');
             return;
+        }
+
+         const itensFormatados = selectedOptions.map(item => `${item.text} (R$ ${item.price.toFixed(2)})`).join(', ');
+
+        const dadosParaPlanilha = {
+            nomeCliente: nome,
+            rua: rua,
+            bairro: bairro,
+            itens: itensFormatados, 
+            total: totalPrice.toFixed(2), 
+            status: 'Pendente' 
+        };
+
+        const resultadoEnvio = await enviarParaGoogleSheets(dadosParaPlanilha);
+
+        if (resultadoEnvio.success) {
+            alert('✅ Pedido salvo na planilha e pronto para WhatsApp!');
+            
+        } else {
+            alert('❌ Erro ao salvar pedido na planilha: ' + resultadoEnvio.message);
         }
 
         let orderDetails = `*Pedido de Quentinhas - Neide Marmitas Fit Congeladas*\n\n`;
@@ -286,4 +219,34 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(whatsappURL, '_blank');
     });
 
+    
+
 });
+
+function showLoadingIndicator(show = true) {
+    const loadingDiv = document.getElementById('loading-indicator') || createLoadingIndicator();
+    loadingDiv.style.display = show ? 'block' : 'none';
+}
+
+function createLoadingIndicator() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-indicator';
+    loadingDiv.innerHTML = `
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background: rgba(0,0,0,0.8); color: white; padding: 20px; 
+                    border-radius: 10px; z-index: 1000; text-align: center;">
+            <div style="margin-bottom: 10px;">📊 Salvando pedido...</div>
+            <div style="width: 30px; height: 30px; border: 3px solid #f3f3f3; 
+                        border-top: 3px solid #3498db; border-radius: 50%; 
+                        animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        </div>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    `;
+    loadingDiv.style.display = 'none';
+    document.body.appendChild(loadingDiv);
+    return loadingDiv;}
